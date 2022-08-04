@@ -1,0 +1,146 @@
+id: squeakroad
+title: Squeak Road
+version: 0.1.2.1
+release-notes: Added LND v0.15.0 compatability
+license: mit
+wrapper-repo: "https://github.com/yzernik/squeakroad-wrapper"
+upstream-repo: "https://github.com/yzernik/squeakroad"
+support-site: "https://t.me/squeakroad"
+marketing-site: "https://github.com/yzernik/squeakroad"
+build: ["make"]
+description:
+  short: "Sell your files for Bitcoin"
+  long: "
+  Squeak Road lets you run an anonymous market where anyone can buy or sell anything.
+  As the admin of your market, you can curate which listings are allowed, and you can configure
+  the fee rate that will be collected from sales.
+  Buyers can leave ratings for each completed sale, and the ratings are used to calculate a score
+  for each seller account.
+  Warning: This app exposes your Lightning node pubkey. Be careful not to use any other app or invoice that links your Lightning node to your identity or your location.
+"
+assets:
+  license: LICENSE
+  icon: icon.png
+  instructions: docs/instructions.md
+  docker-images: image.tar
+main:
+  type: docker
+  image: main
+  entrypoint: docker_entrypoint.sh
+  args: []
+  mounts:
+    main: /root
+    compat: /mnt/assets
+    lnd: /mnt/lnd
+  io-format: yaml
+health-checks:
+  main:
+    name: Web Interface
+    success-message: The Squeak Road UI is ready to visit in a web browser
+    type: docker
+    image: main
+    entrypoint: health-check.sh
+    args: []
+    io-format: json
+    inject: true
+config:
+  get:
+    type: docker
+    image: compat
+    system: true
+    entrypoint: compat
+    args:
+      - config
+      - get
+      - /root
+      - /mnt/assets/config_spec.yaml
+    mounts:
+      main: /root
+      compat: /mnt/assets
+    io-format: yaml
+  set:
+    type: docker
+    image: compat
+    system: true
+    entrypoint: compat
+    args:
+      - config
+      - set
+      - squeakroad
+      - /root
+      - /mnt/assets/config_rules.yaml
+    mounts:
+      main: /root
+      compat: /mnt/assets
+    io-format: yaml
+properties:
+  type: docker
+  image: compat
+  system: true
+  entrypoint: compat
+  args:
+    - properties
+    - /root
+  mounts:
+    main: /root
+  io-format: yaml
+volumes:
+  main:
+    type: data
+  compat:
+    type: assets
+  lnd:
+    type: pointer
+    package-id: lnd
+    volume-id: main
+    path: /public
+    readonly: false
+interfaces:
+  main:
+    name: Browser Interface
+    description: The main Squeak Road browser interface
+    tor-config:
+      port-mapping:
+        80: "8080"
+    lan-config:
+      443:
+        ssl: true
+        internal: 8080
+    ui: true
+    protocols:
+      - tcp
+      - http
+dependencies:
+  lnd:
+    version: ">=0.11.1 <0.16.0"
+    description: Used to communicate with the Lightning Network.
+    requirement:
+      type: required
+    config: ~
+backup:
+  create:
+    type: docker
+    image: compat
+    system: true 
+    entrypoint: compat 
+    args: 
+      - duplicity
+      - create
+      - /mnt/backup
+      - /root/data
+    mounts:
+      BACKUP: "/mnt/backup" 
+      main: "/root/data"
+  restore:
+    type: docker
+    image: compat
+    system: true
+    entrypoint: compat
+    args:
+      - duplicity
+      - restore
+      - /root/data
+      - /mnt/backup
+    mounts:
+      BACKUP: "/mnt/backup"
+      main: "/root/data"

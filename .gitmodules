@@ -1,0 +1,3 @@
+[submodule "squeakroad"]
+	path = squeakroad
+	url = https://github.com/yzernik/squeakroad.git
