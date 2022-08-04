@@ -1,13 +1,12 @@
 #!/bin/bash
 set -e
 
-SQUEAKROAD_PASS=$(yq e '.password' /root/start9/config.yaml)
 
 export ROCKET_PORT=8080
 export ROCKET_ADDRESS=0.0.0.0
 export SQUEAKROAD_DB_URL=/root/db.sqlite
 export SQUEAKROAD_ADMIN_USERNAME=squeakroad-admin
-export SQUEAKROAD_ADMIN_PASSWORD=${APP_PASSWORD}
+export SQUEAKROAD_ADMIN_PASSWORD=$(yq e '.password' /root/start9/config.yaml)
 export SQUEAKROAD_LND_HOST=lnd.embassy
 export SQUEAKROAD_LND_PORT=10009
 export SQUEAKROAD_LND_TLS_CERT_PATH=/mnt/lnd/tls.cert
