@@ -9,7 +9,7 @@ support-site: "https://t.me/squeakroad"
 marketing-site: "https://github.com/yzernik/squeakroad"
 build: ["make"]
 description:
-  short: "Sell your files for Bitcoin"
+  short: "Run your own anonymous market"
   long: "
   Squeak Road lets you run an anonymous market where anyone can buy or sell anything.
   As the admin of your market, you can curate which listings are allowed, and you can configure
