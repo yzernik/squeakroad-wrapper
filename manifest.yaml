@@ -1,7 +1,7 @@
 id: squeakroad
 title: Squeak Road
-version: 0.1.2.1
-release-notes: Added LND v0.15.0 compatability
+version: 0.1.10
+release-notes: Show more descriptive signup error message
 license: mit
 wrapper-repo: "https://github.com/yzernik/squeakroad-wrapper"
 upstream-repo: "https://github.com/yzernik/squeakroad"
